@@ -4,7 +4,7 @@ import SwiftUI
 struct WineFinder_iOS_ClientApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
 }

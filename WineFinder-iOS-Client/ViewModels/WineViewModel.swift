@@ -8,45 +8,77 @@ import Foundation
 import UIKit
 import Combine
 
+@MainActor
 class WineViewModel: ObservableObject {
     
     @Published var wines: [Wine] = []
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
     
     private let service = WineService()
     
     func loadWines() {
-        service.fetchWines { [weak self] fetched in
-            self?.wines = fetched
-        }
-    }
-    
-    func addWine(wine: Wine, image: UIImage?, completion: @escaping () -> Void) {
-        service.createWineWithImage(wine: wine, image: image) { success in
-            if success {
-                self.loadWines()
-                completion()
-            }
-        }
-    }
-    
-    func deleteWine(at indexSet: IndexSet) {
-        for index in indexSet {
-            let wine = wines[index]
+        Task{
+            isLoading = true
+            errorMessage = nil
             
-            service.deleteWine(id: wine.id) { [weak self] success in
-                if success {
-                    self?.loadWines()
-                }
+            do {
+                wines = try await service.fetchWines()
+            } catch {
+                errorMessage = "Failed to load wines \(error)"
+                print("Load error: ", error)
             }
+            isLoading = false
         }
     }
-
-    func updateWine(wine: Wine, image: UIImage?, completion: @escaping () -> Void) {
-        service.updateWineWithImage(wine: wine, image: image) { success in
-            if success {
-                self.loadWines()
-                completion()
+    
+    func addWine(wine: Wine, image: UIImage?) {
+        Task {
+            isLoading = true
+            errorMessage = nil
+            
+            do {
+                try await service.createWine(wine: wine, image: image)
+                await loadWines()
+            } catch {
+                errorMessage = "Failed to add wine \(error)"
+                print("add wine error: ", error)
             }
+            isLoading = false
+        }
+    }
+    
+    func updateWine(wine: Wine, image:UIImage?){
+        Task {
+            isLoading = true
+            errorMessage = nil
+            
+            do {
+                try await service.updateWine(wine: wine, image: image)
+                await loadWines()
+            } catch {
+                errorMessage = "Failed to update wine \(error)"
+                print("Update error:", error)
+            }
+            
+            isLoading = false
+        }
+    }
+    
+    func deleteWine(id:String){
+        Task{
+            isLoading = true
+            errorMessage = nil
+            
+            do{
+                try await service.deleteWine(id: id)
+                wines.removeAll{$0.id == id}
+            } catch {
+                errorMessage = "Failed to delete wine \(error)"
+                print("Delete error:", error)
+            }
+            
+            isLoading = false
         }
     }
 }

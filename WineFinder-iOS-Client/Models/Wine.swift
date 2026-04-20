@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct Wine: Identifiable, Codable {
+struct Wine: Identifiable, Codable, Hashable {
     let id: String
     let wine_name: String
     let grape: String
@@ -22,4 +22,5 @@ struct Wine: Identifiable, Codable {
     let sommNotes: String?
     let imageURL: String?
     let colour: String
+    let slots: [String]?
 }
