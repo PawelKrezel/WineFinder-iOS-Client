@@ -54,6 +54,7 @@ struct MainView: View {
                     viewModel: viewModel,
                     wine: wine
                 )
+                .id(wine.id)
             } else {
                 Text("Select a wine")
                     .foregroundColor(.gray)
