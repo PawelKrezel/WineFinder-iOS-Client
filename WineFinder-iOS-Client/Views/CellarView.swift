@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CellarView: View {
     let wines: [Wine]
+    let selectedWine: Wine?
     
     var occupiedSlots: Set<String> {
         var set = Set<String>()
@@ -15,6 +16,11 @@ struct CellarView: View {
         }
         
         return set
+    }
+    
+    var selectedSlots: Set<String> {
+        guard let slots = selectedWine?.slots else { return [] }
+        return Set(slots)
     }
     
     var body: some View {
@@ -32,7 +38,15 @@ struct CellarView: View {
                             
                             ForEach(generateSlots(for: shelf), id: \.self) { slot in
                                 Rectangle()
-                                    .fill(occupiedSlots.contains(slot) ? Color.green : Color.gray.opacity(0.3))
+                                    .fill(
+
+                                        selectedSlots.contains(slot) ? Color.blue :
+
+                                        occupiedSlots.contains(slot) ? Color.green :
+
+                                        Color.gray.opacity(0.3)
+
+                                    )
                             }
                         }
                     }

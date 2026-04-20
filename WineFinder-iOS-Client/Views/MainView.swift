@@ -50,11 +50,18 @@ struct MainView: View {
             
             // RIGHT PANEL (DETAIL)
             if let wine = selectedWine {
-                WineFormView(
-                    viewModel: viewModel,
-                    wine: wine
-                )
-                .id(wine.id)
+                VStack {
+                    WineFormView(
+                        viewModel: viewModel,
+                        wine: wine
+                    )
+                    .id(wine.id)
+
+                    CellarView(
+                        wines: viewModel.wines,
+                        selectedWine: wine
+                    )
+                }
             } else {
                 Text("Select a wine")
                     .foregroundColor(.gray)
