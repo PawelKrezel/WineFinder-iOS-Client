@@ -40,7 +40,7 @@ struct CellarView: View {
                                 Rectangle()
                                     .fill(
                                         editableSlots.contains(slot) ? Color.blue :
-                                        occupiedSlots.contains(slot) ? Color.green :
+                                        (occupiedSlots.contains(slot) && !selectedSlots.contains(slot)) ? Color.red :
                                         Color.gray.opacity(0.3)
                                     )
                                     .frame(width: 18, height: 18)
