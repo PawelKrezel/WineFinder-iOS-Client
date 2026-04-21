@@ -46,24 +46,28 @@ struct CellarView: View {
             HStack(alignment: .top, spacing: 10) {
                 
                 ForEach(1...6, id: \.self) { shelf in
-                    
                     VStack(spacing: 5) {
-                        
                         Text("Shelf \(shelf)")
                             .font(.headline)
-                        
                         LazyVGrid(columns: columns(for: shelf), spacing: 2) {
-                            
                             ForEach(generateSlots(for: shelf), id: \.self) { slot in
-                                Rectangle()
-                                    .fill(
-                                        editableSlots.contains(slot) ? Color.blue :
-                                        (occupiedSlots.contains(slot) && !selectedSlots.contains(slot)) ? Color.red :
-                                        Color.gray.opacity(0.3)
-                                    )
-                                    .frame(width: 20, height: 20)
-                                    .onTapGesture {
-                                        toggleSlot(slot)
+                                ZStack {
+                                    Rectangle()
+                                        .fill(
+                                            editableSlots.contains(slot) ? Color.blue :
+                                            (occupiedSlots.contains(slot) && !selectedSlots.contains(slot)) ? Color.red :
+                                            Color.gray.opacity(0.3)
+                                        )
+                                    
+                                    if let wine = slotToWine[slot] {
+                                        Text(String(wine.wine_name.prefix(2)))
+                                            .font(.system(size: 11))
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                                .frame(width: 21, height: 21)
+                                .onTapGesture {
+                                    toggleSlot(slot)
                                     }
                                     .onLongPressGesture {
                                         if let wine = slotToWine[slot],
@@ -75,10 +79,23 @@ struct CellarView: View {
                             }
                         }
                     }
+                    
                     // Wall seperating the shelves
-                    Rectangle()
-                        .fill(Color.black)
-                        .frame(width: 10)
+                    VStack(spacing: 0) {
+                        ForEach(0...26, id: \.self) { row in
+                            ZStack {
+                                Rectangle()
+                                    .fill(Color.black)
+                                if (row != 0 && row != 26){
+                                    Text("\(row)")
+                                        .font(.system(size: 11))
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            .frame(height: 23)
+                        }
+                    }
+                    .frame(width: 21)
                 }
             }
             .padding()
