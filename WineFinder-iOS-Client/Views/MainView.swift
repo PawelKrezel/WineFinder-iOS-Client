@@ -10,7 +10,26 @@ struct MainView: View {
     
     @StateObject private var viewModel = WineViewModel()
     
+    @State private var searchText = ""
     @State private var showingAdd = false
+    
+    var filteredWines: [Wine] {
+        if searchText.isEmpty {
+            return viewModel.wines
+        }
+        
+        let query = searchText.lowercased()
+        return viewModel.wines.filter { wine in
+            wine.wine_name.lowercased().contains(query) ||
+            wine.grape.lowercased().contains(query) ||
+            wine.region.lowercased().contains(query) ||
+            wine.country_of_origin.lowercased().contains(query) ||
+            String(wine.vintage).contains(query) ||
+            wine.body.lowercased().contains(query) ||
+            wine.acidity.lowercased().contains(query) ||
+            wine.tannin.lowercased().contains(query)
+        }
+    }
     
     var body: some View {
         NavigationSplitView {
@@ -20,7 +39,7 @@ struct MainView: View {
                 ProgressView("Loading/Updating wines...")
             } else {
                 List(selection: $viewModel.selectedWine) {
-                    ForEach(viewModel.wines) { wine in
+                    ForEach(filteredWines) { wine in
                         VStack(alignment: .leading) {
                             Text(wine.wine_name)
                                 .font(.headline)
@@ -37,7 +56,13 @@ struct MainView: View {
                             viewModel.deleteWine(id: wine.id)
                         }
                     }
+                    
+                    if !searchText.isEmpty && filteredWines.isEmpty {
+                        Text("Womp! Womp! No results found")
+                            .foregroundColor(.gray)
+                    }
                 }
+                .searchable(text: $searchText, prompt: "Search by wine attributes")
                 .navigationTitle("Wines")
                 .toolbar {
                     Button {
