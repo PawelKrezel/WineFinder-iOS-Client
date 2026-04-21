@@ -124,6 +124,26 @@ struct WineFormView: View {
                 // MARK: - Image
                 Section("Image") {
                     
+                    // Old Img preview
+                    if let urlString = wine?.imageURL,
+                       let url = URL(string: urlString) {
+                        VStack{
+                            Text("Image currently held in the database for \(name):")
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 350)
+                            } placeholder: {
+                                Text("Loadingggg...")
+                            }
+                        }
+
+                    }
+                    else{
+                        Text("No image saved in the database yet for \(name)")
+                    }
+                    
                     Button("Select Image") {
                         showSourcePicker = true
                     }
@@ -139,11 +159,23 @@ struct WineFormView: View {
                         }
                     }
                     
+                    // uploaded image preview and controls
                     if let image = selectedImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 200)
+                        VStack{
+                            Text("Image below will be used for \(name)")
+                            
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 350)
+                            
+                            Button("Clear Uploaded Image") {
+                                selectedImage = nil
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.red)
+                        }
+
                     }
                 }
                 

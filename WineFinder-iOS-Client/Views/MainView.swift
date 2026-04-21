@@ -16,33 +16,38 @@ struct MainView: View {
         NavigationSplitView {
             
             // LEFT PANEL (LIST)
-            List(selection: $viewModel.selectedWine) {
-                ForEach(viewModel.wines) { wine in
-                    VStack(alignment: .leading) {
-                        Text(wine.wine_name)
-                            .font(.headline)
-                        
-                        Text("\(wine.vintage) • \(wine.region)")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+            if viewModel.isLoading {
+                ProgressView("Loading/Updating wines...")
+            } else {
+                List(selection: $viewModel.selectedWine) {
+                    ForEach(viewModel.wines) { wine in
+                        VStack(alignment: .leading) {
+                            Text(wine.wine_name)
+                                .font(.headline)
+                            
+                            Text("\(wine.vintage) • \(wine.region), \(wine.country_of_origin)")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        .tag(wine)
                     }
-                    .tag(wine)
+                    .onDelete { indexSet in
+                        if let index = indexSet.first {
+                            let wine = viewModel.wines[index]
+                            viewModel.deleteWine(id: wine.id)
+                        }
+                    }
                 }
-                .onDelete { indexSet in
-                    if let index = indexSet.first {
-                        let wine = viewModel.wines[index]
-                        viewModel.deleteWine(id: wine.id)
+                .navigationTitle("Wines")
+                .toolbar {
+                    Button {
+                        showingAdd = true
+                    } label: {
+                        Label("Add Wine", systemImage: "plus")
                     }
                 }
             }
-            .navigationTitle("Wines")
-            .toolbar {
-                Button {
-                    showingAdd = true
-                } label: {
-                    Label("Add Wine", systemImage: "plus")
-                }
-            }
+
             
             
         } detail: {
@@ -52,11 +57,12 @@ struct MainView: View {
                     WineFormView(viewModel: viewModel)
                 }
             } else {
-                Text("Select a wine")
+                Text("Select a wine from the list, or add a new entry")
                     .foregroundColor(.gray)
             }
         }
         .onAppear {
+            viewModel.isLoading = true
             viewModel.loadWines()
         }
         .sheet(isPresented: $showingAdd) {
