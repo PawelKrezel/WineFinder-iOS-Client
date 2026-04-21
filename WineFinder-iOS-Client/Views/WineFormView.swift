@@ -19,6 +19,7 @@ struct WineFormView: View {
     
     var isEditing: Bool { wine != nil }
     
+    let isAddMode: Bool
     // MARK: - State
     // Wine Details
     @State private var name = ""
@@ -219,6 +220,7 @@ struct WineFormView: View {
     // MARK: - Setup
     
     func setupInitialValues() {
+        if isAddMode { return }
         guard let wine = wine else { return }
         // Wine Details
         name = wine.wine_name

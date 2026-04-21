@@ -79,7 +79,7 @@ struct MainView: View {
             // RIGHT PANEL (DETAIL)
             if let wine = viewModel.selectedWine {
                 VStack {
-                    WineFormView(viewModel: viewModel)
+                    WineFormView(viewModel: viewModel, isAddMode: false)
                 }
             } else {
                 Text("Select a wine from the list, or add a new entry")
@@ -91,7 +91,7 @@ struct MainView: View {
             viewModel.loadWines()
         }
         .sheet(isPresented: $showingAdd) {
-            WineFormView(viewModel: viewModel)
+            WineFormView(viewModel: viewModel, isAddMode: true)
         }
     }
 }

@@ -46,7 +46,7 @@ class WineService {
         }
         
         _ = try await APIClient.shared.makeRequest(
-            path: "api/wines/\(wine.id)/",
+            path: "/api/wines/\(wine.id)/",
             method: "PUT",
             body: body,
             contentType: contentType)
@@ -70,7 +70,7 @@ class WineService {
         }
         
         _ = try await APIClient.shared.makeRequest(
-            path: "api/wines/",
+            path: "/api/wines/",
             method: "POST",
             body:body,
             contentType: contentType)
