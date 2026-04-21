@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct MainView: View {
+    @State private var wineToDelete: Wine?
+    @State private var showDeleteAlert = false
     
     @StateObject private var viewModel = WineViewModel()
     
@@ -52,8 +54,8 @@ struct MainView: View {
                     }
                     .onDelete { indexSet in
                         if let index = indexSet.first {
-                            let wine = viewModel.wines[index]
-                            viewModel.deleteWine(id: wine.id)
+                            wineToDelete = filteredWines[index]
+                            showDeleteAlert = true
                         }
                     }
                     
@@ -92,6 +94,22 @@ struct MainView: View {
         }
         .sheet(isPresented: $showingAdd) {
             WineFormView(viewModel: viewModel, isAddMode: true)
+        }
+        .alert("Delete \(wineToDelete?.wine_name)?", isPresented: $showDeleteAlert) {
+            
+            Button("Delete", role: .destructive) {
+                if let wine = wineToDelete {
+                    viewModel.deleteWine(id: wine.id)
+                }
+                wineToDelete = nil
+            }
+            
+            Button("Cancel", role: .cancel) {
+                wineToDelete = nil
+            }
+            
+        } message: {
+            Text("This action cannot be undone")
         }
     }
 }
