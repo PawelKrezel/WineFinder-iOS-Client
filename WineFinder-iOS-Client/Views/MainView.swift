@@ -56,11 +56,6 @@ struct MainView: View {
                         wine: wine
                     )
                     .id(wine.id)
-
-                    CellarView(
-                        wines: viewModel.wines,
-                        selectedWine: wine
-                    )
                 }
             } else {
                 Text("Select a wine")

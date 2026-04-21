@@ -18,22 +18,19 @@ struct WineFormView: View {
     var isEditing: Bool { wine != nil }
     
     // MARK: - State
-    
+    // Wine Details
     @State private var name = ""
     @State private var grape = ""
     @State private var region = ""
     @State private var country = ""
     @State private var vintage = ""
-    
     @State private var wineBody = "medium-body"
     @State private var tannin = "no-tannin"
     @State private var acidity = "medium-acidity"
     @State private var colour = "Red"
-    
     @State private var glass = "Standard"
     @State private var coravin = "No"
     @State private var btlOnly = "No"
-    
     @State private var notes = ""
     
     // Image
@@ -42,13 +39,15 @@ struct WineFormView: View {
     @State private var showSourcePicker = false
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
+    // Wine Cellar mapping
+    @State private var editableSlots: Set<String> = []
     
     var body: some View {
         NavigationStack {
             
             Form {
                 
-                // MARK: - Basic
+                // MARK: - Basic Information
                 Section("Basic Info") {
                     TextField("Name", text: $name)
                     TextField("Grape", text: $grape)
@@ -57,13 +56,13 @@ struct WineFormView: View {
                 }
                 
                 // MARK: - Origin
-                Section("Origin") {
+                Section("Origin Details") {
                     TextField("Region", text: $region)
                     TextField("Country", text: $country)
                 }
                 
                 // MARK: - Characteristics
-                Section("Characteristics") {
+                Section("WSET Characteristics") {
                     
                     Picker("Body", selection: $wineBody) {
                         Text("Light").tag("light-body")
@@ -92,8 +91,8 @@ struct WineFormView: View {
                     }
                 }
                 
-                // MARK: - Service
-                Section("Service") {
+                // MARK: - Service instructions
+                Section("Wine Service Instructions") {
                     
                     Picker("Glass", selection: $glass) {
                         Text("Standard").tag("Standard")
@@ -115,7 +114,7 @@ struct WineFormView: View {
                 }
                 
                 // MARK: - Notes
-                Section("Notes") {
+                Section("Sommelier Notes") {
                     TextEditor(text: $notes)
                         .frame(minHeight: 120)
                 }
@@ -145,6 +144,16 @@ struct WineFormView: View {
                             .frame(height: 200)
                     }
                 }
+                
+                // MARK: - Digital map of the Wine Cellar
+                Section("Cellar Map"){
+                    CellarView(
+                        wines: viewModel.wines,
+                        selectedWine: wine,
+                        editableSlots: $editableSlots
+                    )
+                }
+
             }
             
             .navigationTitle(isEditing ? "Edit Wine" : "Add Wine")
@@ -172,23 +181,24 @@ struct WineFormView: View {
     
     func setupInitialValues() {
         guard let wine = wine else { return }
-        
+        // Wine Details
         name = wine.wine_name
         grape = wine.grape
         region = wine.region
         country = wine.country_of_origin
         vintage = "\(wine.vintage)"
-        
         wineBody = wine.body
         tannin = wine.tannin
         acidity = wine.acidity
         colour = wine.colour
-        
         glass = wine.glass
         coravin = wine.coravin
         btlOnly = wine.btl_only
-        
         notes = wine.sommNotes ?? ""
+        // TODO: Image
+        
+        // Wine Cellar mapping
+        editableSlots = Set(wine.slots ?? [])
     }
     
     
@@ -212,7 +222,7 @@ struct WineFormView: View {
             sommNotes: notes,
             imageURL: wine?.imageURL,
             colour: colour,
-            slots:wine?.slots ?? nil
+            slots: Array(editableSlots)
         )
         
         if isEditing {

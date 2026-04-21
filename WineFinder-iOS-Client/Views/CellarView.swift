@@ -3,7 +3,7 @@ import SwiftUI
 struct CellarView: View {
     let wines: [Wine]
     let selectedWine: Wine?
-    
+    @Binding var editableSlots: Set<String>
     var occupiedSlots: Set<String> {
         var set = Set<String>()
         
@@ -31,34 +31,35 @@ struct CellarView: View {
                     
                     VStack(spacing: 5) {
                         
-                        Text("S\(shelf)")
-                            .font(.caption)
+                        Text("Shelf \(shelf)")
+                            .font(.headline)
                         
                         LazyVGrid(columns: columns(for: shelf), spacing: 2) {
                             
                             ForEach(generateSlots(for: shelf), id: \.self) { slot in
                                 Rectangle()
                                     .fill(
-
-                                        selectedSlots.contains(slot) ? Color.blue :
-
+                                        editableSlots.contains(slot) ? Color.blue :
                                         occupiedSlots.contains(slot) ? Color.green :
-
                                         Color.gray.opacity(0.3)
-
                                     )
+                                    .frame(width: 18, height: 18)
+                                    .onTapGesture {
+                                        toggleSlot(slot)
+                                    }
                             }
                         }
                     }
                     
                     Rectangle()
                         .fill(Color.black)
-                        .frame(width: 2)
+                        .frame(width: 10)
                 }
             }
             .padding()
         }
     }
+    
     
     // MARK: - Columns per shelf
     
@@ -100,5 +101,13 @@ struct CellarView: View {
         }
         
         return slots
+    }
+    
+    func toggleSlot(_ slot: String) {
+        if editableSlots.contains(slot) {
+            editableSlots.remove(slot)
+        } else {
+            editableSlots.insert(slot)
+        }
     }
 }
