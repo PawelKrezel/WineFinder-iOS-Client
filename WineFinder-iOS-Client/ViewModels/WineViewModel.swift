@@ -10,7 +10,7 @@ import Combine
 
 @MainActor
 class WineViewModel: ObservableObject {
-    
+    @Published var selectedWine: Wine?
     @Published var wines: [Wine] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?

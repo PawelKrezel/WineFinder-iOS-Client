@@ -10,14 +10,13 @@ struct MainView: View {
     
     @StateObject private var viewModel = WineViewModel()
     
-    @State private var selectedWine: Wine?
     @State private var showingAdd = false
     
     var body: some View {
         NavigationSplitView {
             
             // LEFT PANEL (LIST)
-            List(selection: $selectedWine) {
+            List(selection: $viewModel.selectedWine) {
                 ForEach(viewModel.wines) { wine in
                     VStack(alignment: .leading) {
                         Text(wine.wine_name)
@@ -47,15 +46,10 @@ struct MainView: View {
             
             
         } detail: {
-            
             // RIGHT PANEL (DETAIL)
-            if let wine = selectedWine {
+            if let wine = viewModel.selectedWine {
                 VStack {
-                    WineFormView(
-                        viewModel: viewModel,
-                        wine: wine
-                    )
-                    .id(wine.id)
+                    WineFormView(viewModel: viewModel)
                 }
             } else {
                 Text("Select a wine")
@@ -66,10 +60,7 @@ struct MainView: View {
             viewModel.loadWines()
         }
         .sheet(isPresented: $showingAdd) {
-            WineFormView(
-                viewModel: viewModel,
-                wine: nil
-            )
+            WineFormView(viewModel: viewModel)
         }
     }
 }

@@ -12,8 +12,10 @@ struct WineFormView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    let viewModel: WineViewModel
-    var wine: Wine?
+    @ObservedObject var viewModel: WineViewModel
+    var wine: Wine? {
+        viewModel.selectedWine
+    }
     
     var isEditing: Bool { wine != nil }
     
@@ -150,14 +152,19 @@ struct WineFormView: View {
                     CellarView(
                         wines: viewModel.wines,
                         selectedWine: wine,
+                        onWineSelected: { selected in
+                            viewModel.selectedWine = selected
+                        },
                         editableSlots: $editableSlots
+
                     )
                 }
 
             }
-            
-            .navigationTitle(isEditing ? "Edit Wine" : "Add Wine")
-            
+            .navigationTitle(isEditing ? "Edit Wine - \(wine?.wine_name ?? "")" : "Add Wine")
+            .onReceive(viewModel.$selectedWine) { _ in
+                setupInitialValues()
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
