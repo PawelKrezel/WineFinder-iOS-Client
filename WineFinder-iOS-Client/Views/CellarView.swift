@@ -110,7 +110,7 @@ struct CellarView: View {
                     }
                     
                     // Extra details
-                    Text("\(wine.grape) from \(wine.region) in \(wine.country_of_origin), (\(wine.vintage))")
+                    Text("\(wine.grape) from \(wine.region) in \(wine.country_of_origin), (\(String(wine.vintage)))")
                         .foregroundColor(.secondary)
                     
                     // Nav buttons

@@ -44,7 +44,7 @@ struct MainView: View {
                             Text(wine.wine_name)
                                 .font(.headline)
                             
-                            Text("\(wine.vintage) • \(wine.region), \(wine.country_of_origin)")
+                            Text("\(String(wine.vintage)) • \(wine.region), \(wine.country_of_origin)")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
