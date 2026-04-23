@@ -8,7 +8,8 @@
 import Foundation
 
 struct Config {
-    
+    // reads data from config.plist. Originally this file was not included in public github for security rasons.
+    // included for submission 
     static let shared = Config()
     
     let baseURL: String

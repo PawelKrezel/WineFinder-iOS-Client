@@ -3,7 +3,6 @@
 *.env
 .env.*
 __pycache__/
-Config.plist
 DerivedData/
 *.xcuserstate
 *.xcworkspace

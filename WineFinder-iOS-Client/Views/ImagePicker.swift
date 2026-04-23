@@ -8,6 +8,8 @@
 import SwiftUI
 import UIKit
 
+// This file was developed with assistance of generative AI
+// model used: OpenAI's ChatGPT 5.3
 struct ImagePicker: UIViewControllerRepresentable {
     
     @Binding var image: UIImage?

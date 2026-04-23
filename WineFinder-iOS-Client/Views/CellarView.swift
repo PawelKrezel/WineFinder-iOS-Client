@@ -10,6 +10,7 @@ struct CellarView: View {
     @State private var selectedSlotForPopup: String?
     @State private var selectedWineForPopup: Wine?
     
+    // slots ocupied by any wine
     var occupiedSlots: Set<String> {
         var set = Set<String>()
         
@@ -24,6 +25,7 @@ struct CellarView: View {
         return set
     }
     
+    // slots occupied by currently selected wine
     var selectedSlots: Set<String> {
         guard let slots = selectedWine?.slots else { return [] }
         return Set(slots)
@@ -41,10 +43,12 @@ struct CellarView: View {
         return map
     }
     
+    // UI
     var body: some View {
         ScrollView(.horizontal) {
             HStack(alignment: .top, spacing: 10) {
                 
+                // all 6 shelves generated
                 ForEach(1...6, id: \.self) { shelf in
                     VStack(spacing: 5) {
                         Text("Shelf \(shelf)")
@@ -59,6 +63,7 @@ struct CellarView: View {
                                             Color.gray.opacity(0.3)
                                         )
                                     
+                                    // display first to letters of wine
                                     if let wine = slotToWine[slot] {
                                         Text(String(wine.wine_name.prefix(2)))
                                             .font(.system(size: 11))

@@ -20,6 +20,7 @@ struct MainView: View {
             return viewModel.wines
         }
         
+        //search accross multiple attributes
         let query = searchText.lowercased()
         return viewModel.wines.filter { wine in
             wine.wine_name.lowercased().contains(query) ||
@@ -63,7 +64,7 @@ struct MainView: View {
                         Text("Womp! Womp! No results found")
                             .foregroundColor(.gray)
                     }
-                }
+                }// native ios searchbar
                 .searchable(text: $searchText, prompt: "Search by wine attributes")
                 .navigationTitle("Wines")
                 .toolbar {
@@ -95,8 +96,10 @@ struct MainView: View {
         .sheet(isPresented: $showingAdd) {
             WineFormView(viewModel: viewModel, isAddMode: true)
         }
+        // confirm before deleting
         .alert("Delete \(wineToDelete?.wine_name)?", isPresented: $showDeleteAlert) {
             
+            //confrirm
             Button("Delete", role: .destructive) {
                 if let wine = wineToDelete {
                     viewModel.deleteWine(id: wine.id)
@@ -104,6 +107,7 @@ struct MainView: View {
                 wineToDelete = nil
             }
             
+            //cancel
             Button("Cancel", role: .cancel) {
                 wineToDelete = nil
             }

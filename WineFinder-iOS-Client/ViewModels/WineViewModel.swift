@@ -8,7 +8,7 @@ import Foundation
 import UIKit
 import Combine
 
-@MainActor
+@MainActor // All ui related updates on main thread
 class WineViewModel: ObservableObject {
     @Published var selectedWine: Wine?
     @Published var wines: [Wine] = []
@@ -17,6 +17,7 @@ class WineViewModel: ObservableObject {
     
     private let service = WineService()
     
+    // uses service to load wines
     func loadWines() {
         Task{
             isLoading = true
@@ -32,6 +33,7 @@ class WineViewModel: ObservableObject {
         }
     }
     
+    // uses service to add wines
     func addWine(wine: Wine, image: UIImage?) {
         Task {
             isLoading = true
@@ -48,6 +50,7 @@ class WineViewModel: ObservableObject {
         }
     }
     
+    // uses service to update wines
     func updateWine(wine: Wine, image:UIImage?){
         Task {
             isLoading = true
@@ -65,6 +68,7 @@ class WineViewModel: ObservableObject {
         }
     }
     
+    // uses service to delete wines
     func deleteWine(id:String){
         Task{
             isLoading = true

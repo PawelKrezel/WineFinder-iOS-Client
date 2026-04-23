@@ -27,7 +27,6 @@ class WineService {
     }
     
     // PUT
-    
     func updateWine(wine: Wine, image: UIImage?) async throws {
         
         let body: Data
@@ -86,6 +85,7 @@ class WineService {
             body.append(string.data(using: .utf8)!)
         }
         
+        // converts wine model into key-value pairs
         let fields: [String: String] = [
             "wine_name": wine.wine_name,
             "grape": wine.grape,
@@ -102,12 +102,14 @@ class WineService {
             "colour": wine.colour
         ]
         
+        // appends each key as a seperate part
         for (key, value) in fields {
             append("--\(boundary)\r\n")
             append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
             append("\(value)\r\n")
         }
         
+        // append img if present
         if let image = image,
            let data = image.jpegData(compressionQuality: 0.8) {
             

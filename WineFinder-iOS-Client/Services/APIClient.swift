@@ -13,24 +13,29 @@ class APIClient {
     private let baseURL = Config.shared.baseURL
     private init() {}
     
-    // Generic request builder
+    // Generic HTTP request builder
     func makeRequest(
         path: String,
         method: String,
         body: Data? = nil,
         contentType: String = "application/json"
     ) async throws -> Data {
+        
+        // full url
         guard let url = URL(string: baseURL + path) else {
             throw URLError(.badURL)
         }
         
+        //request object
         var request = URLRequest(url: url)
         request.httpMethod = method
         
+        // Authentication token added to header
         request.setValue("Token \(Config.shared.token)", forHTTPHeaderField: "Authorization")
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = body
         
+        // perform async network request
         let(data, response) = try await URLSession.shared.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
